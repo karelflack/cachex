@@ -16,9 +16,10 @@ app = FastAPI(
     debug=settings.debug,
 )
 
+_frontend_url = os.environ.get("FRONTEND_URL", settings.frontend_url)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url],
+    allow_origins=[_frontend_url, "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
