@@ -8,7 +8,7 @@ def get_supabase() -> Client:
     global _supabase
     if _supabase is None:
         _supabase = create_client(
-            os.environ["SUPABASE_URL"],
-            os.environ["SUPABASE_KEY"],
+            os.environ.get("CACHEX_SUPABASE_URL") or os.environ.get("SUPABASE_URL", ""),
+            os.environ.get("SUPABASE_KEY", ""),
         )
     return _supabase
