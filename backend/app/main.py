@@ -1,8 +1,15 @@
+import os
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import health, proxy, dashboard
 from app.core.config import settings
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info(f"SUPABASE_URL from env: {bool(os.environ.get('SUPABASE_URL'))}")
+logger.info(f"SUPABASE_URL from settings: {bool(settings.supabase_url)}")
 
 app = FastAPI(
     title=settings.app_name,
