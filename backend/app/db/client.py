@@ -1,5 +1,5 @@
+import os
 from supabase import create_client, Client
-from app.core.config import settings
 
 _supabase: Client | None = None
 
@@ -7,5 +7,8 @@ _supabase: Client | None = None
 def get_supabase() -> Client:
     global _supabase
     if _supabase is None:
-        _supabase = create_client(settings.supabase_url, settings.supabase_key)
+        _supabase = create_client(
+            os.environ["SUPABASE_URL"],
+            os.environ["SUPABASE_KEY"],
+        )
     return _supabase
