@@ -45,7 +45,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="mb-8">
         <h1 className="text-xl font-semibold text-ink">Dashboard</h1>
         <p className="text-sm text-ink-muted mt-1">Cache performance and usage</p>
@@ -76,7 +76,7 @@ export default function Dashboard() {
 
       <div className="bg-surface border border-stroke rounded-xl p-5 mb-6">
         <h2 className="text-sm font-medium text-ink mb-4">Upgrade your plan</h2>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {PLANS.map((plan) => (
             <div key={plan.id} className="bg-elevated border border-stroke rounded-lg p-4 flex flex-col gap-2">
               <div>
@@ -97,9 +97,10 @@ export default function Dashboard() {
       </div>
 
       <div className="bg-surface border border-stroke rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-stroke">
+        <div className="px-4 sm:px-5 py-4 border-b border-stroke">
           <h2 className="text-sm font-medium text-ink">Recent Requests</h2>
         </div>
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-stroke">
@@ -142,6 +143,7 @@ export default function Dashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

@@ -68,7 +68,7 @@ export default function SignUp() {
             className="mt-0.5 w-4 h-4 rounded border-stroke bg-elevated accent-teal cursor-pointer flex-shrink-0"
           />
           <span className="text-xs text-ink-muted leading-relaxed">
-            I agree to the{' '}
+            I have read and agree to the{' '}
             <a href="/terms" target="_blank" className="text-teal hover:underline">
               Terms of Service
             </a>{' '}

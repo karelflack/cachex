@@ -62,8 +62,8 @@ export default function ApiKeys() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-xl font-semibold text-ink">API Keys</h1>
           <p className="text-sm text-ink-muted mt-1">
@@ -81,7 +81,7 @@ export default function ApiKeys() {
           <div className="w-5 h-5 border-2 border-teal border-t-transparent rounded-full animate-spin" />
         </div>
       ) : keys.length === 0 ? (
-        <div className="border border-stroke border-dashed rounded-xl flex flex-col items-center justify-center py-16 px-8 text-center">
+        <div className="border border-stroke border-dashed rounded-xl flex flex-col items-center justify-center py-10 sm:py-16 px-4 sm:px-8 text-center">
           <div className="w-10 h-10 rounded-full bg-elevated flex items-center justify-center mb-4">
             <Key size={20} className="text-ink-faint" />
           </div>
@@ -96,6 +96,7 @@ export default function ApiKeys() {
         </div>
       ) : (
         <div className="bg-surface border border-stroke rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-stroke">
@@ -132,6 +133,7 @@ export default function ApiKeys() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

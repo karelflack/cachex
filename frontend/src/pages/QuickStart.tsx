@@ -53,7 +53,7 @@ export default function QuickStart() {
   const snippets = buildSnippets(cachexKey)
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="mb-8">
         <h1 className="text-xl font-semibold text-ink">Quick-start</h1>
         <p className="text-sm text-ink-muted mt-1">
@@ -98,7 +98,7 @@ export default function QuickStart() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-xs text-ink-faint">
           Your Cachex key:{' '}
           <span className="font-mono text-ink-muted">
