@@ -1,13 +1,31 @@
 import { useEffect, useState } from 'react'
 import StatCard from '../components/StatCard'
 import Badge from '../components/ui/Badge'
-import { fetchStats, fetchUsage } from '../api/client'
+import Button from '../components/ui/Button'
+import { fetchStats, fetchUsage, createCheckoutSession } from '../api/client'
 import type { Stats, UsageLog } from '../api/client'
+
+const PLANS = [
+  { id: 'starter', name: 'Starter', price: '$49/mo', requests: '1M req/mo' },
+  { id: 'growth', name: 'Growth', price: '$199/mo', requests: '10M req/mo' },
+  { id: 'scale', name: 'Scale', price: '$799/mo', requests: '50M req/mo' },
+]
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [usage, setUsage] = useState<UsageLog[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [upgrading, setUpgrading] = useState<string | null>(null)
+
+  const handleUpgrade = async (planId: string) => {
+    setUpgrading(planId)
+    try {
+      const { url } = await createCheckoutSession(planId)
+      window.location.href = url
+    } catch {
+      setUpgrading(null)
+    }
+  }
 
   useEffect(() => {
     Promise.all([fetchStats(), fetchUsage()])
@@ -54,6 +72,28 @@ export default function Dashboard() {
           value={stats ? `$${stats.estimated_saved_usd}` : '—'}
           sub="based on cached requests"
         />
+      </div>
+
+      <div className="bg-surface border border-stroke rounded-xl p-5 mb-6">
+        <h2 className="text-sm font-medium text-ink mb-4">Upgrade your plan</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {PLANS.map((plan) => (
+            <div key={plan.id} className="bg-elevated border border-stroke rounded-lg p-4 flex flex-col gap-2">
+              <div>
+                <p className="text-sm font-semibold text-ink">{plan.name}</p>
+                <p className="text-xs text-ink-muted">{plan.requests}</p>
+              </div>
+              <p className="text-lg font-bold text-teal">{plan.price}</p>
+              <Button
+                size="sm"
+                onClick={() => handleUpgrade(plan.id)}
+                disabled={upgrading !== null}
+              >
+                {upgrading === plan.id ? 'Redirecting...' : 'Upgrade'}
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="bg-surface border border-stroke rounded-xl overflow-hidden">

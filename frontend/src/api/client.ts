@@ -67,3 +67,6 @@ export const createApiKey = (name: string) =>
 
 export const revokeApiKey = (id: string) =>
   api.delete(`/api/keys/${id}`)
+
+export const createCheckoutSession = (plan: string) =>
+  api.post<{ url: string }>('/billing/checkout', { plan }).then((r) => r.data)
