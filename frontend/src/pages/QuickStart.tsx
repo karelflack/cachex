@@ -5,7 +5,6 @@ import Tabs from '../components/ui/Tabs'
 import CodeBlock from '../components/ui/CodeBlock'
 
 const PROXY_URL = 'https://cachex-production.up.railway.app/proxy'
-const OPENAI_KEY_PLACEHOLDER = 'sk-your-openai-key'
 
 function buildSnippets(cachexKey: string) {
   return {
