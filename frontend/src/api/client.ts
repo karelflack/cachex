@@ -6,9 +6,19 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000
 export const api = axios.create({ baseURL: API_BASE_URL })
 
 api.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession()
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error) {
+      await supabase.auth.signOut()
+      window.location.href = '/signin'
+      return Promise.reject(error)
+    }
+    if (session?.access_token) {
+      config.headers.Authorization = `Bearer ${session.access_token}`
+    }
+  } catch {
+    await supabase.auth.signOut()
+    window.location.href = '/signin'
   }
   return config
 })
