@@ -6,7 +6,15 @@ from app.cache.client import cache_get, cache_set
 from app.core.config import settings
 from app.core.hashing import hash_prompt, make_cache_key
 from app.db.api_keys import validate_api_key
+from app.db.client import get_supabase
 from app.db.usage import log_usage
+
+PLAN_LIMITS = {
+    "free": 50_000,
+    "starter": 1_000_000,
+    "growth": 10_000_000,
+    "scale": 50_000_000,
+}
 
 router = APIRouter()
 
@@ -51,6 +59,14 @@ async def proxy(
     validated = await validate_api_key(x_api_key)
     if not validated:
         raise HTTPException(status_code=401, detail="Invalid or inactive API key")
+
+    # Enforce paywall
+    db = get_supabase()
+    tenant = db.table("tenants").select("plan, monthly_request_count").eq("id", validated.tenant_id).single().execute().data
+    if tenant:
+        limit = PLAN_LIMITS.get(tenant.get("plan", "free"), 50_000)
+        if tenant.get("monthly_request_count", 0) >= limit:
+            raise HTTPException(status_code=402, detail="Monthly request limit reached. Upgrade your plan.")
 
     if request.provider not in PROVIDER_URLS:
         raise HTTPException(status_code=400, detail=f"Unsupported provider: {request.provider}")
@@ -107,5 +123,7 @@ async def proxy(
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
     )
+
+    db.table("tenants").update({"monthly_request_count": (tenant.get("monthly_request_count", 0) or 0) + 1}).eq("id", validated.tenant_id).execute()
 
     return {"cached": False, "response": result}

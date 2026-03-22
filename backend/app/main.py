@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import health, proxy, dashboard, keys
+from app.api.routes import health, proxy, dashboard, keys, billing
 from app.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
@@ -29,3 +29,4 @@ app.include_router(health.router)
 app.include_router(proxy.router)
 app.include_router(dashboard.router)
 app.include_router(keys.router)
+app.include_router(billing.router)
