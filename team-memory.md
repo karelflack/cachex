@@ -6,7 +6,7 @@ Shared context across all agents. Read this at the start of every session. Write
 ## Product
 - Core mechanic: prompt caching proxy — hash incoming prompts, check Redis, return cached or forward to LLM
 - Stack: Python + FastAPI (backend), React + TypeScript + Tailwind (frontend), Redis (cache), Supabase (database)
-- Status: working locally, not yet deployed
+- Status: deployed and live in production
 - Two customer segments: startups (self-serve / PLG) and enterprise (sales-led)
 
 ## Company
@@ -38,9 +38,12 @@ Shared context across all agents. Read this at the start of every session. Write
 - [DECISION] Pipeline math: ~70 touches → 10+ calls → 10 signed design partners, target 5 weeks (2026-03-21)
 
 ## Technical Decisions
-- Backend hosted on Railway, frontend on Vercel (planned)
+- Backend hosted on Railway at cachex-production.up.railway.app, frontend on Vercel at cachex-vc4x.vercel.app
 - Multi-tenancy: API keys hashed with SHA-256, namespaced in Redis per tenant
 - Cache TTL: 7 days
+- [DECISION] Use CACHEX_SUPABASE_URL (not SUPABASE_URL) — Railway reserves that name (2026-03-22)
+- [DECISION] Redis must be in same Railway project as backend — internal networking only works within same project (2026-03-22)
+- [DECISION] Set FRONTEND_URL env var in Railway to the exact Vercel URL for CORS to work (2026-03-22)
 
 ## Legal
 - Norwegian company — GDPR applies
@@ -51,10 +54,11 @@ Shared context across all agents. Read this at the start of every session. Write
 Sprint Definition of Done: A new user can sign up, pay, get an API key, and make a cached LLM request — without talking to anyone on the team.
 
 ### Goal 1: Production Deploy (Dag)
-- [ ] Deploy backend to Railway
-- [ ] Connect Supabase + Redis in prod, run migrations
-- [ ] Deploy frontend to Vercel
-- [ ] End-to-end smoke test in prod
+- [x] Deploy backend to Railway — live at cachex-production.up.railway.app
+- [x] Connect Supabase + Redis in prod — cache hit/miss verified in production
+- [x] Deploy frontend to Vercel — live at cachex-vc4x.vercel.app
+- [x] End-to-end smoke test in prod — cache hit/miss + CORS verified (2026-03-22)
+- [DECISION] Railway: set root dir=backend, port=8080, use CACHEX_SUPABASE_URL (not SUPABASE_URL), Redis must be in same project (2026-03-21)
 
 ### Goal 2: Self-Serve Onboarding (Arve + Ingrid)
 - [ ] Sign-up / sign-in with Supabase Auth
@@ -87,6 +91,13 @@ Previously completed:
 - [x] Pick company name (Jorunn) — Cachex ✓
 - [x] Brand direction, tone of voice, visual guidelines (Jorunn) ✓
 - [x] Decide pricing model (Nora) ✓
+- [x] Design system + full auth/dashboard UI scaffold (2026-03-21) ✓
+  - [DECISION] Brand tokens encoded in tailwind.config.js (void, surface, elevated, stroke, teal, danger, ink palette) (2026-03-21)
+  - [DECISION] Supabase Auth used for sign-up/sign-in; JWT passed as Bearer token to backend (2026-03-21)
+  - [DECISION] API client uses Supabase session interceptor — no separate API key env var needed for auth (2026-03-21)
+  - Components delivered: Button, Input, Badge, Card, Modal, Tabs, CodeBlock, AuthLayout, DashboardLayout
+  - Pages delivered: SignUp, SignIn, Dashboard, ApiKeys, QuickStart
+  - Proxy base_url in Quick-start snippets: https://api.cachex.dev/v1
 
 ---
-_Last updated: 2026-03-21_
+_Last updated: 2026-03-22_

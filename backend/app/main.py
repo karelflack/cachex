@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import health, proxy, dashboard
+from app.api.routes import health, proxy, dashboard, keys
 from app.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
@@ -28,3 +28,4 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(proxy.router)
 app.include_router(dashboard.router)
+app.include_router(keys.router)
