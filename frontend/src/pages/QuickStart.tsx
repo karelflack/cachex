@@ -4,47 +4,46 @@ import Button from '../components/ui/Button'
 import Tabs from '../components/ui/Tabs'
 import CodeBlock from '../components/ui/CodeBlock'
 
-const BASE_URL = 'https://api.cachex.dev/v1'
+const PROXY_URL = 'https://cachex-production.up.railway.app/proxy'
 const OPENAI_KEY_PLACEHOLDER = 'sk-your-openai-key'
 
 function buildSnippets(cachexKey: string) {
   return {
-    curl: `curl ${BASE_URL}/chat/completions \\
+    curl: `curl -X POST "${PROXY_URL}" \\
   -H "Content-Type: application/json" \\
   -H "X-Api-Key: ${cachexKey}" \\
-  -H "Authorization: Bearer ${OPENAI_KEY_PLACEHOLDER}" \\
   -d '{
+    "provider": "openai",
     "model": "gpt-4o",
-    "messages": [{"role": "user", "content": "Hello!"}]
+    "messages": [{"role": "user", "content": "Hello"}]
   }'`,
 
-    python: `import openai
+    python: `import requests
 
-client = openai.OpenAI(
-    api_key="${OPENAI_KEY_PLACEHOLDER}",
-    base_url="${BASE_URL}",
-    default_headers={"X-Api-Key": "${cachexKey}"},
+response = requests.post(
+    "${PROXY_URL}",
+    headers={"X-Api-Key": "${cachexKey}"},
+    json={
+        "provider": "openai",
+        "model": "gpt-4o",
+        "messages": [{"role": "user", "content": "Hello"}],
+    },
 )
+print(response.json())`,
 
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello!"}],
-)
-print(response.choices[0].message.content)`,
-
-    node: `import OpenAI from 'openai'
-
-const client = new OpenAI({
-  apiKey: '${OPENAI_KEY_PLACEHOLDER}',
-  baseURL: '${BASE_URL}',
-  defaultHeaders: { 'X-Api-Key': '${cachexKey}' },
+    node: `const response = await fetch("${PROXY_URL}", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Api-Key": "${cachexKey}",
+  },
+  body: JSON.stringify({
+    provider: "openai",
+    model: "gpt-4o",
+    messages: [{ role: "user", content: "Hello" }],
+  }),
 })
-
-const response = await client.chat.completions.create({
-  model: 'gpt-4o',
-  messages: [{ role: 'user', content: 'Hello!' }],
-})
-console.log(response.choices[0].message.content)`,
+console.log(await response.json())`,
   }
 }
 
